@@ -15,11 +15,11 @@ const getTodosHandler =
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     logger.info(`Event: ${event}`)
     const userId = getUserId(event)
-    const todos = await getTodosForUser(userId)
-    if (!todos) {
+    const items = await getTodosForUser(userId)
+    if (!items) {
       return Responses._404({ message: 'Failed to get todos' })
     }
-    return Responses._200({ todos })
+    return Responses._200({ items })
   }
 
 export const handler = middy(getTodosHandler)
