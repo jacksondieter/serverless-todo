@@ -34,13 +34,6 @@ provider:
     # Enable API Gateway logs
     restApi: true
 
-  # iamRoleStatements:
-  #   - Effect: Allow
-  #     Action:
-  #       - xray:PutTelemetryRecords
-  #       - xray:PutTraceSegments
-  #     Resource: '*'
-
 functions:
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
@@ -74,7 +67,7 @@ functions:
           cors: true
           authorizer: Auth
           request:
-            schemas:
+            schema:
               application/json: ${file(models/create-todo-model.json)}
     iamRoleStatementsName: ${self:service.name}-create-todos-role-${self:provider.stage}
     iamRoleStatements:
@@ -97,7 +90,7 @@ functions:
           cors: true
           authorizer: Auth
           request:
-            schemas:
+            schema:
               application/json: ${file(models/update-todo-model.json)}
     iamRoleStatementsName: ${self:service.name}-update-todos-role-${self:provider.stage}
     iamRoleStatements:
