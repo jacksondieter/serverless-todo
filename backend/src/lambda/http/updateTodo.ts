@@ -16,11 +16,12 @@ const updateTodoHandler =
     const userId = getUserId(event)
     const todoId = event.pathParameters.todoId
     const updatedTodo: UpdateTodoRequest = JSON.parse(event.body)
-    // TODO: Update a TODO item with the provided id using values in the "updatedTodo" object - DONE
     const todo = await updateTodo(updatedTodo, todoId, userId)
     if (!todo) {
+      logger.info(`Event fail`)
       return Responses._404({ message: 'Failed to update todo' })
     }
+    logger.info(`Event success`)
     return Responses._200({ todo })
   }
 export const handler = middy(updateTodoHandler)

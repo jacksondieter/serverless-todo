@@ -14,12 +14,13 @@ const deleteTodoHandler =
     logger.info(`Event: ${event}`)
     const userId = getUserId(event)
     const todoId = event.pathParameters.todoId
-    // TODO: Remove a TODO item by id - DONE
-    const todo = await deleteTodo(todoId, userId)
-    if (!todo) {
+    const item = await deleteTodo(todoId, userId)
+    if (!item) {
+      logger.info(`Event fail`)
       return Responses._404({ message: 'Failed to delete todo' })
     }
-    return Responses._200({ todo })
+    logger.info(`Event success`)
+    return Responses._200({ todo: item })
   }
 export const handler = middy(deleteTodoHandler)
   .use(httpErrorHandler())

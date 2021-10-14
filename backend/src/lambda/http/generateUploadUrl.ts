@@ -14,11 +14,12 @@ const uploadUrlHandler =
     logger.info(`Event: ${event}`)
     const userId = getUserId(event)
     const todoId = event.pathParameters.todoId
-    // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
     const uploadUrl = await createAttachmentPresignedUrl(todoId, userId) 
     if (!uploadUrl) {
+      logger.info(`Event fail`)
       return Responses._404({ message: 'Failed to delete todo' })
     }
+    logger.info(`Event success`)
     return Responses._200( {uploadUrl} )
   }
 export const handler = middy(uploadUrlHandler)
