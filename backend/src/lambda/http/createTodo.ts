@@ -13,12 +13,13 @@ const createTodoHandler =
     logger.info(`Event: ${event}`)
     const userId = getUserId(event)
     const newTodo: CreateTodoRequest = JSON.parse(event.body)
-    // TODO: Implement creating a new TODO item
-    const todo = await createTodo(newTodo,userId)
-    if (!todo) {
+    const item = await createTodo(newTodo,userId)
+    if (!item) {
+      logger.info(`Event fail`)
       return Responses._404({ message: 'Failed to create todo' })
     }
-    return Responses._201({todo})
+    logger.info(`Event success`)
+    return Responses._201({item})
   }
 export const handler = middy(createTodoHandler)
   .use(httpErrorHandler())
