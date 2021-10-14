@@ -22,8 +22,7 @@ provider:
     lambda: true
     apiGateway: true
 
-  # Use these variables in the functions and resources section below. For example,
-  # ${self:provider.environment.ATTACHMENT_S3_BUCKET}
+  # Variables example, ${self:provider.environment.ATTACHMENT_S3_BUCKET}
   environment:
     TODOS_TABLE: Todos-${self:provider.stage}
     TODOS_CREATED_AT_INDEX: CreatedAtIndex
@@ -46,8 +45,6 @@ functions:
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
 
-  # DONE: Configure this function
-  # Provide iamRoleStatements property for performing Actions on DynamoDB
   GetTodos:
     handler: src/lambda/http/getTodos.handler
     events:
@@ -68,10 +65,6 @@ functions:
           - xray:PutTraceSegments
         Resource: '*'
 
-  # DONE: Configure this function
-  # Provide iamRoleStatements property. Decide the Actions and AWS Resource.
-  # To refer to an AWS resource defined in the "Resources" section, you can use "Resource: !GetAtt <resource-name>.Arn"
-  # To validate incoming HTTP requests, we have provided the request schemas in function definition below.
   CreateTodo:
     handler: src/lambda/http/createTodo.handler
     events:
@@ -95,8 +88,6 @@ functions:
           - xray:PutTraceSegments
         Resource: '*'
 
-  # TODO: Configure this function
-  # Provide property for setting up CORS, Authorizer, iamRoleStatements, and request schemas
   UpdateTodo:
     handler: src/lambda/http/updateTodo.handler
     events:
@@ -121,8 +112,6 @@ functions:
           - xray:PutTraceSegments
         Resource: '*'
 
-  # TODO: Configure this function
-  # Provide property for setting up CORS, Authorizer, iamRoleStatements
   DeleteTodo:
     handler: src/lambda/http/deleteTodo.handler
     events:
@@ -130,6 +119,7 @@ functions:
           method: delete
           path: todos/{todoId}
           cors: true
+          authorizer: Auth
     iamRoleStatementsName: ${self:service.name}-delete-todos-role-${self:provider.stage}
     iamRoleStatements:
       - Effect: Allow
@@ -147,8 +137,6 @@ functions:
           - xray:PutTraceSegments
         Resource: '*'
 
-  # TODO: Configure this function - DONE
-  # Provide property for setting up CORS, Authorizer, iamRoleStatements
   GenerateUploadUrl:
     handler: src/lambda/http/generateUploadUrl.handler
     events:
@@ -177,8 +165,6 @@ functions:
 
 resources:
   Resources:
-    # Add necessary AWS resources. You will need at least the following AWS resources
-    # DONE: Fill the properties
     # API Gateway.
     GatewayResponseDefault4XX:
       Type: AWS::ApiGateway::GatewayResponse
@@ -190,7 +176,8 @@ resources:
         ResponseType: DEFAULT_4XX
         RestApiId:
           Ref: ApiGatewayRestApi
-    # DONE: Create a DynamoDB table with local secondary index and a composite key
+
+    # DynamoDB
     TodosTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -218,8 +205,7 @@ resources:
             Projection:
               ProjectionType: ALL
 
-    # DONE: Complete the bucket properties below.
-    # Do not forget to add the CorsConfiguration propoerty
+    # S3 Bucket
     AttachmentsBucket:
       Type: AWS::S3::Bucket
       Properties:
@@ -238,8 +224,7 @@ resources:
                 - HEAD
               MaxAge: 3000
 
-    # TODO: Complete the policy below and attach it to the bucket defined above - DONE
-    # For cross referencing the name of the bucket, use "!Ref AttachmentsBucket"
+    # Bucket policy
     BucketPolicy:
       Type: AWS::S3::BucketPolicy
       Properties:
